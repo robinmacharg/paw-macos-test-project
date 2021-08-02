@@ -15,6 +15,7 @@
 		00D5024526B6B22200F41D2C /* SuperheroesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5024426B6B22200F41D2C /* SuperheroesTests.swift */; };
 		00D5025026B6B22200F41D2C /* SuperheroesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5024F26B6B22200F41D2C /* SuperheroesUITests.swift */; };
 		00D5025F26B6B4B600F41D2C /* SuperheroSquad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5025E26B6B4B500F41D2C /* SuperheroSquad.swift */; };
+		00D5026226B6B62000F41D2C /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5026126B6B62000F41D2C /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		00D5025126B6B22200F41D2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00D5025D26B6B48700F41D2C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		00D5025E26B6B4B500F41D2C /* SuperheroSquad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperheroSquad.swift; sourceTree = "<group>"; };
+		00D5026126B6B62000F41D2C /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		00D5026326B7E9E300F41D2C /* README_submission.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_submission.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +84,7 @@
 		00D5022226B6B21E00F41D2C = {
 			isa = PBXGroup;
 			children = (
+				00D5026326B7E9E300F41D2C /* README_submission.md */,
 				00D5025D26B6B48700F41D2C /* README.md */,
 				00D5022D26B6B21E00F41D2C /* Superheroes */,
 				00D5024326B6B22200F41D2C /* SuperheroesTests */,
@@ -135,6 +139,7 @@
 		00D5026026B6B4BB00F41D2C /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				00D5026126B6B62000F41D2C /* Model.swift */,
 				00D5025E26B6B4B500F41D2C /* SuperheroSquad.swift */,
 			);
 			path = Data;
@@ -269,6 +274,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00D5026226B6B62000F41D2C /* Model.swift in Sources */,
 				00D5023426B6B21E00F41D2C /* Superheroes.xcdatamodeld in Sources */,
 				00D5023126B6B21E00F41D2C /* ViewController.swift in Sources */,
 				00D5025F26B6B4B600F41D2C /* SuperheroSquad.swift in Sources */,

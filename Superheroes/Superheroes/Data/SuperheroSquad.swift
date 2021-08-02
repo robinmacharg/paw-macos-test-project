@@ -4,6 +4,7 @@
 //
 //  Created by Robin Macharg on 27/07/2021.
 //
+// Codable representations of squads of superheroes
 
 import Foundation
 
@@ -11,20 +12,22 @@ import Foundation
 
 // MARK: - SuperheroSquad
 struct SuperheroSquad: Codable, Equatable {
+    let id: String
     let squadName: String
     let homeTown: String
     let formed: Int
     let active: Bool
-    let members: [Member]
+    var members: [Member]
 
     init(
-        size: Int = 0,
-        squadName: String = squadNames.randomElement() ?? "The Unknown Soldiers",
-        homeTown: String = homeTowns.randomElement() ?? "Voidville",
-        formed: Int = Int.random(in: 0...2022),
-        active: Bool = Bool.random(),
-        members: [Member] = [])
+        size: Int,
+        squadName: String,
+        homeTown: String,
+        formed: Int,
+        active: Bool,
+        members: [Member])
     {
+        self.id = UUID().uuidString
         self.squadName = squadName
         self.homeTown = homeTown
         self.formed = formed
@@ -40,6 +43,3 @@ struct Member: Codable, Equatable {
     let secretIdentity: String
     let powers: [String]
 }
-
-let squadNames = ["", ""]
-let homeTowns = ["", ""]
