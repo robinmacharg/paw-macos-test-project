@@ -13,8 +13,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         Model.shared.populateWithRandomData(squads: 3)
 
-        Model.shared.squads.forEach { squad in
-            print(squad)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let jsonData = try encoder.encode(Model.shared.squads)
+            if let jsonString = String(data: jsonData, encoding: .utf8)
+            {
+                print(jsonString)
+            }
+        }
+        catch let e {
+            fatalError("Failed to encode Superhero Squads: \(e.localizedDescription)")
         }
     }
 
