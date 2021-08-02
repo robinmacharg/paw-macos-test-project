@@ -13,17 +13,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         Model.shared.populateWithRandomData(squads: 3)
 
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        do {
-            let jsonData = try encoder.encode(Model.shared.squads)
-            if let jsonString = String(data: jsonData, encoding: .utf8)
-            {
-                print(jsonString)
+        // The following is likely overkill for this exercise but is left in to show good error-handling hygeine.
+        let json = Model.shared.asJSON(prettyPrint: true)
+        switch json {
+        case .success(let jsonString):
+            print(jsonString)
+        case .failure(let error):
+            switch error {
+            case .failedToEncode:
+                print("Failed to encode the model correctly")
             }
-        }
-        catch let e {
-            fatalError("Failed to encode Superhero Squads: \(e.localizedDescription)")
         }
     }
 

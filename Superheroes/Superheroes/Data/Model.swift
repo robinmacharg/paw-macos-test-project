@@ -49,7 +49,7 @@ public final class Model {
      *   - squads: The number of squads to generate
      *   - maxMembers: An optional maximum number of squad members
      */
-    public func populateWithRandomData(squads: Int, maxMembers: Int? = nil) {
+    func populateWithRandomData(squads: Int, maxMembers: Int? = nil) {
 
         self.squads = []
 
@@ -93,5 +93,31 @@ public final class Model {
                 self.squads.append(squad)
             }
         }
+    }
+
+    /**
+     * Convert the model to JSON, pretty-printing if desired
+     *
+     * - Parameters:
+     *   - prettyPrint: An optional boolean indicating whether to pretty-print the generated JSON
+     */
+    func asJSON(prettyPrint: Bool = false) -> Result<String, SuperHeroError> {
+        let encoder = JSONEncoder()
+        if prettyPrint {
+            encoder.outputFormatting = .prettyPrinted
+        }
+
+        do {
+            let jsonData = try encoder.encode(squads)
+            if let jsonString = String(data: jsonData, encoding: .utf8)
+            {
+                return .success(jsonString)
+            }
+        }
+        catch let e {
+            fatalError("Failed to encode Superhero Squads: \(e.localizedDescription)")
+        }
+
+        return .failure(SuperHeroError.failedToEncode)
     }
 }

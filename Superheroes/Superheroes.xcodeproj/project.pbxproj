@@ -16,6 +16,8 @@
 		00D5025026B6B22200F41D2C /* SuperheroesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5024F26B6B22200F41D2C /* SuperheroesUITests.swift */; };
 		00D5025F26B6B4B600F41D2C /* SuperheroSquad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5025E26B6B4B500F41D2C /* SuperheroSquad.swift */; };
 		00D5026226B6B62000F41D2C /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5026126B6B62000F41D2C /* Model.swift */; };
+		00D5026526B7F8F900F41D2C /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5026426B7F8F900F41D2C /* API.swift */; };
+		00D5026726B7FEAF00F41D2C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5026626B7FEAF00F41D2C /* Errors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,8 @@
 		00D5025E26B6B4B500F41D2C /* SuperheroSquad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperheroSquad.swift; sourceTree = "<group>"; };
 		00D5026126B6B62000F41D2C /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		00D5026326B7E9E300F41D2C /* README_submission.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_submission.md; sourceTree = "<group>"; };
+		00D5026426B7F8F900F41D2C /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = API.swift; path = Network/API.swift; sourceTree = "<group>"; };
+		00D5026626B7FEAF00F41D2C /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +88,7 @@
 		00D5022226B6B21E00F41D2C = {
 			isa = PBXGroup;
 			children = (
+				00D5026626B7FEAF00F41D2C /* Errors.swift */,
 				00D5026326B7E9E300F41D2C /* README_submission.md */,
 				00D5025D26B6B48700F41D2C /* README.md */,
 				00D5022D26B6B21E00F41D2C /* Superheroes */,
@@ -114,6 +119,7 @@
 				00D5023A26B6B22200F41D2C /* Info.plist */,
 				00D5023B26B6B22200F41D2C /* Superheroes.entitlements */,
 				00D5023226B6B21E00F41D2C /* Superheroes.xcdatamodeld */,
+				00D5026426B7F8F900F41D2C /* API.swift */,
 			);
 			path = Superheroes;
 			sourceTree = "<group>";
@@ -278,7 +284,9 @@
 				00D5023426B6B21E00F41D2C /* Superheroes.xcdatamodeld in Sources */,
 				00D5023126B6B21E00F41D2C /* ViewController.swift in Sources */,
 				00D5025F26B6B4B600F41D2C /* SuperheroSquad.swift in Sources */,
+				00D5026526B7F8F900F41D2C /* API.swift in Sources */,
 				00D5022F26B6B21E00F41D2C /* AppDelegate.swift in Sources */,
+				00D5026726B7FEAF00F41D2C /* Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
