@@ -11,33 +11,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        Model.shared.populateWithRandomData(squads: 3)
-
-        // The following is likely overkill for this exercise but is left in to show good error-handling hygeine.
-        let json = Model.shared.asJSON(prettyPrint: true)
-        switch json {
-        case .success(let jsonString):
-            print(jsonString)
-            sendRequest(bodyText: jsonString)
-        case .failure(let error):
-            switch error {
-            case .failedToEncode:
-                print("Failed to encode the model correctly")
-            }
-        }
-    }
-
-    func sendRequest(bodyText: String) {
-        // Send a request
-        guard let url = URL(string: API.constants.endPoint) else {
-            fatalError("Unable to generate endpoint URL")
-        }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpBody = bodyText.data(using: .utf8)
-
-        API.shared.sendRequest(request: request)
+        
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
