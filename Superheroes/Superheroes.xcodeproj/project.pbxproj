@@ -464,13 +464,14 @@
 				CODE_SIGN_ENTITLEMENTS = Superheroes/Superheroes.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = X32PPV2GRB;
+				DEVELOPMENT_TEAM = 69VQ8X8JJ7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Superheroes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.macharg.Superheroes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -485,13 +486,14 @@
 				CODE_SIGN_ENTITLEMENTS = Superheroes/Superheroes.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = X32PPV2GRB;
+				DEVELOPMENT_TEAM = 69VQ8X8JJ7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Superheroes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.macharg.Superheroes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
