@@ -12,6 +12,7 @@ class MainVC: NSViewController {
     // MARK: - Outlets
     
     @IBOutlet weak var outlineView: NSOutlineView!
+    @IBOutlet weak var historyTableView: NSTableView!
 
     // MARK: - Properties
     
@@ -40,16 +41,65 @@ class MainVC: NSViewController {
         
         switch request {
         case .success(let urlRequest):
-            let request = Request(id: UUID(), squads: squads, request: urlRequest, state: .created)
+            let requestID = UUID()
+            var request = Request(
+                id: requestID,
+                timestamps: Request.Timestamps(started: Date()),
+                squads: squads,
+                request: urlRequest,
+                state: .created)
             
             model.history.append(request)
+            DispatchQueue.main.async {
+                self.historyTableView.reloadData()
+            }
             
             API.sendRequest(request) { [self] request in
                 print("callback", self, request)
+
+                if var request = self.model.history.filter({ $0.id == requestID }).first {
+                    request.state = .completed
+                }
+
+                DispatchQueue.main.async {
+                    self.historyTableView.reloadData()
+                }
             }
         case .failure(let error):
-            fatalError("unhandled")
+            fatalError("unhandled: \(error.localizedDescription)")
         }
+    }
+}
+
+// MARK: - <NSTableViewDelegate>
+
+extension MainVC: NSTableViewDelegate {
+
+    fileprivate enum CellIdentifiers {
+        static let HistoryCell = "HistoryCell"
+      }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        // Only a single column, so dispense with any column filtering
+        if let cell = tableView.makeView(
+            withIdentifier: NSUserInterfaceItemIdentifier(rawValue: CellIdentifiers.HistoryCell),
+            owner: nil) as? HistoryCell
+        {
+            let item = self.model.history[row]
+
+            cell.dateLabel?.stringValue = item.id.uuidString
+            cell.statusLabel?.stringValue = item.state.rawValue
+          return cell
+        }
+        return nil
+    }
+}
+
+// MARK: - <NSTableViewDataSource>
+
+extension MainVC: NSTableViewDataSource {
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return self.model.history.count
     }
 }
 

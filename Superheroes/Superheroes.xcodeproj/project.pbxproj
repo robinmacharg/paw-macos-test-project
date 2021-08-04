@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		000C3CD826BA522A00C58ECC /* MainVCViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000C3CD726BA522A00C58ECC /* MainVCViewModel.swift */; };
+		0030159726BA8DB500ED82B6 /* HistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0030159626BA8DB500ED82B6 /* HistoryCell.swift */; };
+		0030159A26BA920400ED82B6 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0030159926BA920400ED82B6 /* Request.swift */; };
+		0030159C26BA922100ED82B6 /* RequestStateEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0030159B26BA922100ED82B6 /* RequestStateEnum.swift */; };
 		00D5022F26B6B21E00F41D2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5022E26B6B21E00F41D2C /* AppDelegate.swift */; };
 		00D5023126B6B21E00F41D2C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D5023026B6B21E00F41D2C /* MainVC.swift */; };
 		00D5023426B6B21E00F41D2C /* Superheroes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00D5023226B6B21E00F41D2C /* Superheroes.xcdatamodeld */; };
@@ -40,6 +43,9 @@
 
 /* Begin PBXFileReference section */
 		000C3CD726BA522A00C58ECC /* MainVCViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVCViewModel.swift; sourceTree = "<group>"; };
+		0030159626BA8DB500ED82B6 /* HistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCell.swift; sourceTree = "<group>"; };
+		0030159926BA920400ED82B6 /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		0030159B26BA922100ED82B6 /* RequestStateEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestStateEnum.swift; sourceTree = "<group>"; };
 		00D5022B26B6B21E00F41D2C /* Superheroes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Superheroes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D5022E26B6B21E00F41D2C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		00D5023026B6B21E00F41D2C /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
@@ -87,11 +93,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		000C3CDC26BA524700C58ECC /* Views */ = {
+		000C3CDC26BA524700C58ECC /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				00D5023026B6B21E00F41D2C /* MainVC.swift */,
 				000C3CD726BA522A00C58ECC /* MainVCViewModel.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		0030159826BA8DBF00ED82B6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0030159626BA8DB500ED82B6 /* HistoryCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -121,11 +135,12 @@
 		00D5022D26B6B21E00F41D2C /* Superheroes */ = {
 			isa = PBXGroup;
 			children = (
+				00D5022E26B6B21E00F41D2C /* AppDelegate.swift */,
 				00D5026626B7FEAF00F41D2C /* Errors.swift */,
 				00D5026026B6B4BB00F41D2C /* Data */,
 				00D5026826B8011B00F41D2C /* Network */,
-				00D5022E26B6B21E00F41D2C /* AppDelegate.swift */,
-				000C3CDC26BA524700C58ECC /* Views */,
+				000C3CDC26BA524700C58ECC /* View Controllers */,
+				0030159826BA8DBF00ED82B6 /* Views */,
 				00D5023526B6B22200F41D2C /* Assets.xcassets */,
 				00D5023726B6B22200F41D2C /* Main.storyboard */,
 				00D5023A26B6B22200F41D2C /* Info.plist */,
@@ -158,6 +173,8 @@
 			children = (
 				00D5026126B6B62000F41D2C /* Data.swift */,
 				00D5025E26B6B4B500F41D2C /* SuperheroSquad.swift */,
+				0030159926BA920400ED82B6 /* Request.swift */,
+				0030159B26BA922100ED82B6 /* RequestStateEnum.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -302,9 +319,12 @@
 				00D5026226B6B62000F41D2C /* Data.swift in Sources */,
 				00D5023426B6B21E00F41D2C /* Superheroes.xcdatamodeld in Sources */,
 				00D5023126B6B21E00F41D2C /* MainVC.swift in Sources */,
+				0030159726BA8DB500ED82B6 /* HistoryCell.swift in Sources */,
 				000C3CD826BA522A00C58ECC /* MainVCViewModel.swift in Sources */,
 				00D5025F26B6B4B600F41D2C /* SuperheroSquad.swift in Sources */,
 				00D5026526B7F8F900F41D2C /* API.swift in Sources */,
+				0030159C26BA922100ED82B6 /* RequestStateEnum.swift in Sources */,
+				0030159A26BA920400ED82B6 /* Request.swift in Sources */,
 				00D5022F26B6B21E00F41D2C /* AppDelegate.swift in Sources */,
 				00D5026726B7FEAF00F41D2C /* Errors.swift in Sources */,
 			);
@@ -476,7 +496,7 @@
 				CODE_SIGN_ENTITLEMENTS = Superheroes/Superheroes.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 69VQ8X8JJ7;
+				DEVELOPMENT_TEAM = X32PPV2GRB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Superheroes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -498,7 +518,7 @@
 				CODE_SIGN_ENTITLEMENTS = Superheroes/Superheroes.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 69VQ8X8JJ7;
+				DEVELOPMENT_TEAM = X32PPV2GRB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Superheroes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
