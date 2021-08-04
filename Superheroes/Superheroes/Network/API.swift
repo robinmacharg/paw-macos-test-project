@@ -4,7 +4,7 @@
 //
 //  Created by Robin Macharg2 on 02/08/2021.
 //
-// Handles network communication with the backend
+// Handles network communication with the backend.  A Singleton.
 
 import Foundation
 
@@ -20,8 +20,43 @@ public final class API {
     // Private to support the singleton pattern
     private init() {}
 
-    func sendRequest(request: URLRequest) {
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+    /**
+     * Construct a URLRequest object
+     */
+    static func makeURLRequest(squads: [SuperheroSquad]) -> Result<URLRequest, SuperHeroError> {
+        let json = Data.squadsAsJSON(squads: squads)
+        switch json {
+        case .success(let jsonString):
+            guard let url = URL(string: API.constants.endPoint) else {
+                return .failure(.generalError(SuperHeroError.errorTexts.urlError))
+            }
+            
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = "POST"
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonString.data(using: .utf8)
+            urlRequest.setValue("\(String(describing: jsonString.data(using: .utf8)?.count))", forHTTPHeaderField: "Content-Length")
+            
+            return .success(urlRequest)
+        
+        case .failure(let error):
+            switch error {
+            case .failedToEncode:
+                print("Failed to encode the model correctly")
+                return .failure(error)
+            default:
+                return .failure(SuperHeroError.generalError(SuperHeroError.errorTexts.generalError))
+            }
+        }
+    }
+    
+    /**
+     * Send the request.  Uses a URLSession dataTask to ensure a background thread.
+     */
+    static func sendRequest(_ request: Request, callback: ((Any) -> ())?) {
+        let urlRequest = request.request
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
 
             // Check for fundamental networking error
             guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
@@ -36,7 +71,7 @@ public final class API {
                 return
             }
 
-            // PArse out data field
+            // Parse out data field
             if let response = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any],
                let json = response["data"] as? String,
                let data = json.data(using: .utf8)
@@ -44,11 +79,13 @@ public final class API {
                 let decoder = JSONDecoder()
                 let superheroSquad = try? decoder.decode([SuperheroSquad].self, from: data)
                 print(superheroSquad)
+                
+                callback?(request)
             }
 
             // Error
             else {
-
+                fatalError("unhandled")
             }
         }
 

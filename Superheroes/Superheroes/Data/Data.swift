@@ -1,28 +1,19 @@
 //
-//  Model.swift
+//  Data.swift
 //  Superheroes
 //
 //  Created by Robin Macharg2 on 28/07/2021.
 //
-// The application datamodel.  A Singleton.  Could be CoreData, time permitting.
+// Supporting Data operations.  Could be CoreData, time permitting.
 
 import Foundation
 
-public final class Model {
+final class Data {
 
-    // Singleton
-    public static let shared = Model()
-
-    /// The history of HTTP requests
-    private var history: [Any] = []
-
-    /// A list of superhero squads
-    var squads: [SuperheroSquad] = []
-
-    /// Constants used to populate our model with random squads of randomm superheroes.
-    /// Any resemblance to actual superheroes or squads is purely accidental.
+    /// Constants used to populate random squads of randomm superheroes.
+    /// Any resemblance to actual superheroes or squads is purely coincidental.
     private struct constants {
-        static let ageRange = 0...2000
+        static let ageRange = 0...200
         static let formedRange = -5000...2022
         static let squadNames = ["The Hot Bonnets", "The Alcaseltzers", "The Goliaths", "The Forensic Twins"]
         static let homeTowns = ["Glasgow", "Bristol", "Stockholm", "Artemis", "Diemos", "Tel Aviv"]
@@ -34,28 +25,27 @@ public final class Model {
         static let maxPowers = powers.count
     }
 
-    // Private to support the singleton pattern
-    private init() {}
-
     /**
-     * Populate the model with random data.
+     * Create random squads
      *
-     * Note: maxMembers can exceed the number of heros at our disposal and lead to a hero being included multiple times.  This could be
+     * Note: maxMembers can xceed the number of heros at our disposal and lead to a hero being included multiple times.  This could be
      * due to e.g. quantum effects, time travel or multiple realities.  Ours is not to reason why, etc.  In a similar vein duplicates
      * (e.g. secret identity) are not checked for.  We can invent some good reasons for this, but the specification did not explicitly
      * state this as a requirement.  And, you know, quantum.
+     *
+     * Could arguably live in the SuperheroSquad struct.
      *
      * - Parameters:
      *   - squads: The number of squads to generate
      *   - maxMembers: An optional maximum number of squad members
      */
-    func populateWithRandomData(squads: Int, maxMembers: Int? = nil) {
+    static func createSquads(squads squadCount: Int, maxMembers: Int? = nil) -> [SuperheroSquad] {
 
-        self.squads = []
+        var squads: [SuperheroSquad] = []
 
         // The alternate syntax of "(1...squads).forEach({ _ in ..." avoids the discarding _ assignment (likely compiled away anyway?) but
         // is less idiomatic, IMHO.
-        for _ in 1...squads {
+        for _ in 1...squadCount {
             var squadMembers: [Member] = []
 
             for _ in 1...Int.random(in: 1...(maxMembers ?? constants.names.count)) {
@@ -90,22 +80,21 @@ public final class Model {
                     active: Bool.random(),
                     members: squadMembers)
 
-                self.squads.append(squad)
+                squads.append(squad)
             }
         }
+        return squads
     }
-
+    
     /**
-     * Convert the model to JSON, pretty-printing if desired
+     * Convert a list of SuperHeroSquads to (optionally) pretty-printed JSON
      *
      * - Parameters:
      *   - prettyPrint: An optional boolean indicating whether to pretty-print the generated JSON
      */
-    func asJSON(prettyPrint: Bool = false) -> Result<String, SuperHeroError> {
+    static func squadsAsJSON(squads: [SuperheroSquad], prettyPrint: Bool = false) -> Result<String, SuperHeroError> {
         let encoder = JSONEncoder()
-        if prettyPrint {
-            encoder.outputFormatting = .prettyPrinted
-        }
+        encoder.outputFormatting = prettyPrint ? .prettyPrinted : []
 
         do {
             let jsonData = try encoder.encode(squads)

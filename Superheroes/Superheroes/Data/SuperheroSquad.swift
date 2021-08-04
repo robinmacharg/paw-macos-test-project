@@ -8,8 +8,6 @@
 
 import Foundation
 
-//   let superheroSquad = try? newJSONDecoder().decode(SuperheroSquad.self, from: jsonData)
-
 // MARK: - SuperheroSquad
 struct SuperheroSquad: Codable, Equatable {
     let id: String
