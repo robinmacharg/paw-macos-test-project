@@ -15,13 +15,18 @@ class MainVC: NSViewController {
     @IBOutlet weak var historyTableView: NSTableView!
 
     // MARK: - Properties
-    
-    var model: MainVCViewModel = MainVCViewModel()
+
+    // Relatively expensive so create only once
+    private let dateFormatter = DateFormatter()
+
+    private var model: MainVCViewModel = MainVCViewModel()
     
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        dateFormatter.dateFormat = "yyyy/MM/dd, HH:mm:ss"
     }
 
     override var representedObject: Any? {
@@ -36,7 +41,7 @@ class MainVC: NSViewController {
      * Build and submit a request, updating the model on success
      */
     @IBAction func submitRequest(_ sender: Any) {
-        let squads = Data.createSquads(squads: 3, maxMembers: 5)
+        let squads = Data.createSquads(maxSquads: 5, maxMembers: 5)
         let request = API.makeURLRequest(squads: squads)
         
         switch request {
@@ -56,10 +61,13 @@ class MainVC: NSViewController {
             }
             
             API.sendRequest(request) { [self] request in
-                print("callback", self, request)
+
+                // NOTE: artifical delay to help show async update of table
+                sleep(UInt32.random(in: 0...2))
 
                 if let request = self.model.history.filter({ $0.id == requestID }).first {
                     request.state = .completed
+                    request.timestamps.completed = Date()
                 }
 
                 DispatchQueue.main.async {
@@ -72,23 +80,39 @@ class MainVC: NSViewController {
     }
 }
 
+// MARK: - Shared UI Item Identifiers
+
+extension MainVC {
+    fileprivate enum CellIdentifiers {
+        static let HistoryCellID = NSUserInterfaceItemIdentifier(rawValue: "HistoryCell")
+        static let KeyCellID = NSUserInterfaceItemIdentifier("KeyCell")
+        static let KeyColumnID = NSUserInterfaceItemIdentifier("KeyColumn")
+        static let ValueColumnID = NSUserInterfaceItemIdentifier("ValueColumn")
+    }
+}
+
 // MARK: - <NSTableViewDelegate>
 
 extension MainVC: NSTableViewDelegate {
 
-    fileprivate enum CellIdentifiers {
-        static let HistoryCell = "HistoryCell"
-      }
-
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         // Only a single column, so dispense with any column filtering
         if let cell = tableView.makeView(
-            withIdentifier: NSUserInterfaceItemIdentifier(rawValue: CellIdentifiers.HistoryCell),
+            withIdentifier: CellIdentifiers.HistoryCellID,
             owner: nil) as? HistoryCell
         {
             let item = self.model.history[row]
 
-            cell.dateLabel?.stringValue = item.id.uuidString
+            var dateString = ""
+            if let started = item.timestamps.started {
+                dateString = "Started: \(dateFormatter.string(from: started))"
+            }
+
+            if let completed = item.timestamps.completed{
+                dateString += " - Completed: \(dateFormatter.string(from: completed))"
+            }
+
+            cell.dateLabel?.stringValue = dateString
             cell.statusLabel?.stringValue = item.state.rawValue
           return cell
         }
@@ -121,50 +145,112 @@ extension MainVC: NSTableViewDataSource {
 
 extension MainVC: NSOutlineViewDataSource {
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-        if let squad = item as? SuperheroSquad {
-            return squad.members.count
-        }
 
-        return model.currentRequest?.squads.count ?? 0
+        switch item {
+        case nil:
+            return model.currentRequest?.squads.count ?? 0
+        case is SuperheroSquad:
+            return 5
+        case is Member:
+            return 3
+        case let members as [Member]:
+            return members.count
+        default:
+            return 0
+        }
     }
 
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if let squad = item as? SuperheroSquad {
-            return squad.members[index]
+
+            // This style vs. a switch... Undecided which is clearer
+            return [
+                ("id",        "\(squad.id)"),
+                ("Home Town", "\(squad.homeTown)"),
+                ("Formed in", "\(squad.formed)"),
+                ("Active",    "\(squad.active ? "Yes" : "No")"),
+                squad.members,
+            ][index]
         }
 
-        return model.currentRequest?.squads[index]
+        else if let members = item as? [Member] {
+            return members[index]
+        }
+
+        else if let member = item as? Member {
+            return [
+                ("Age",             "\(member.age) years old"),
+                ("Secret Identity", "\(member.secretIdentity)"),
+                // Explicitly avoiding another level of outline since we're quite deep already.
+                // Hopefully this delegate code shows off the idea sufficiently
+                ("Powers",          member.powers.joined(separator: ", ")),
+            ][index]
+        }
+
+        return model.currentRequest?.squads[index] as Any
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        if let squad = item as? SuperheroSquad {
-            return squad.members.count > 0
-        }
-        return false
+        return item is SuperheroSquad
+            || item is [Member]
+            || item is Member
     }
 }
 
 // MARK: - <NSOutlineViewDelegate>
 
 extension MainVC: NSOutlineViewDelegate {
+
+    typealias StringKeyValue = (String, String)
+
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        guard let columnIdentifier = tableColumn?.identifier else {
+            return nil
+        }
+
+        var textFieldValue = ""
+
+
         if let view = outlineView.makeView(
-            withIdentifier: NSUserInterfaceItemIdentifier("KeyCell"),
+            withIdentifier: CellIdentifiers.KeyCellID,
             owner: self) as? NSTableCellView
         {
-            if let squad = item as? SuperheroSquad {
-                view.textField?.stringValue = squad.squadName
+            switch item {
+            case let squad as SuperheroSquad:
+                if columnIdentifier == CellIdentifiers.KeyColumnID {
+                    textFieldValue = squad.squadName
+                }
+
+            case is [Member]:
+                if columnIdentifier == CellIdentifiers.KeyColumnID {
+                    textFieldValue = "Members"
+                }
+
+            case let member as Member:
+                if columnIdentifier == CellIdentifiers.KeyColumnID {
+                    textFieldValue = "\(member.name)"
+                }
+
+            // Using StringKeyValue allows generic reuse
+            case let (key, value) as StringKeyValue:
+                switch columnIdentifier {
+                case CellIdentifiers.KeyColumnID:
+                    textFieldValue = key
+                case CellIdentifiers.ValueColumnID:
+                    textFieldValue = value
+                default:
+                    break
+                }
+
+            default:
+                break
             }
-            else if let hero = item as? Member {
-                view.textField?.stringValue = hero.name
-            }
+
+            view.textField?.stringValue = textFieldValue
 
             return view
-
         }
 
         return nil
     }
 }
-
-

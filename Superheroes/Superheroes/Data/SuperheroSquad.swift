@@ -34,10 +34,12 @@ struct SuperheroSquad: Codable, Equatable {
     }
 }
 
+typealias Powers = [String]
+
 // MARK: - Member
 struct Member: Codable, Equatable {
     let name: String
     let age: Int
     let secretIdentity: String
-    let powers: [String]
+    let powers: Powers
 }

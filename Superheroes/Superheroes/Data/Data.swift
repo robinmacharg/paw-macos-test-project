@@ -14,7 +14,7 @@ final class Data {
     /// Any resemblance to actual superheroes or squads is purely coincidental.
     private struct constants {
         static let ageRange = 0...200
-        static let formedRange = -5000...2022
+        static let formedRange = 1900...2022
         static let squadNames = ["The Hot Bonnets", "The Alcaseltzers", "The Goliaths", "The Forensic Twins"]
         static let homeTowns = ["Glasgow", "Bristol", "Stockholm", "Artemis", "Diemos", "Tel Aviv"]
         static let names = ["Johnny Sixpack", "Bob", "Dave", "Stupendous Liar", "Tightfit", "King Crazy", "Mwah Ha", "Philip", "The Strangler"]
@@ -36,16 +36,16 @@ final class Data {
      * Could arguably live in the SuperheroSquad struct.
      *
      * - Parameters:
-     *   - squads: The number of squads to generate
+     *   - squads: The (maximum) number of squads to generate
      *   - maxMembers: An optional maximum number of squad members
      */
-    static func createSquads(squads squadCount: Int, maxMembers: Int? = nil) -> [SuperheroSquad] {
+    static func createSquads(maxSquads maxSquadCount: Int, maxMembers: Int? = nil) -> [SuperheroSquad] {
 
         var squads: [SuperheroSquad] = []
 
         // The alternate syntax of "(1...squads).forEach({ _ in ..." avoids the discarding _ assignment (likely compiled away anyway?) but
         // is less idiomatic, IMHO.
-        for _ in 1...squadCount {
+        for _ in 0...Int.random(in: 0...maxSquadCount) {
             var squadMembers: [Member] = []
 
             for _ in 1...Int.random(in: 1...(maxMembers ?? constants.names.count)) {
