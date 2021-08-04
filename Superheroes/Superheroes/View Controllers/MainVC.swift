@@ -50,6 +50,7 @@ class MainVC: NSViewController {
                 state: .created)
             
             model.history.append(request)
+
             DispatchQueue.main.async {
                 self.historyTableView.reloadData()
             }
@@ -57,7 +58,7 @@ class MainVC: NSViewController {
             API.sendRequest(request) { [self] request in
                 print("callback", self, request)
 
-                if var request = self.model.history.filter({ $0.id == requestID }).first {
+                if let request = self.model.history.filter({ $0.id == requestID }).first {
                     request.state = .completed
                 }
 
@@ -93,6 +94,19 @@ extension MainVC: NSTableViewDelegate {
         }
         return nil
     }
+
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        if let selectedRow = historyTableView.selectedRowIndexes.first {
+            model.currentRequest = model.history[selectedRow]
+        }
+        else {
+            model.currentRequest = nil
+        }
+        DispatchQueue.main.async {
+            self.outlineView.reloadData()
+            self.outlineView.expandItem(nil, expandChildren: true)
+        }
+    }
 }
 
 // MARK: - <NSTableViewDataSource>
@@ -106,29 +120,51 @@ extension MainVC: NSTableViewDataSource {
 // MARK: - <NSOutlineViewDataSource>
 
 extension MainVC: NSOutlineViewDataSource {
-//    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-//        return model.currentRequest?.squads.count ?? 0
-//    }
-//
-//    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-//        if let squad = item as? SuperheroSquad {
-//            return squad.members[index]
-//        }
-//        return Data.shared.squads[index]
-//    }
-//
-//    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-//        if let squad = item as? SuperheroSquad {
-//            return squad.members.count > 0
-//        }
-//        return false
-//    }
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        if let squad = item as? SuperheroSquad {
+            return squad.members.count
+        }
+
+        return model.currentRequest?.squads.count ?? 0
+    }
+
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        if let squad = item as? SuperheroSquad {
+            return squad.members[index]
+        }
+
+        return model.currentRequest?.squads[index]
+    }
+
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        if let squad = item as? SuperheroSquad {
+            return squad.members.count > 0
+        }
+        return false
+    }
 }
 
 // MARK: - <NSOutlineViewDelegate>
 
 extension MainVC: NSOutlineViewDelegate {
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        if let view = outlineView.makeView(
+            withIdentifier: NSUserInterfaceItemIdentifier("KeyCell"),
+            owner: self) as? NSTableCellView
+        {
+            if let squad = item as? SuperheroSquad {
+                view.textField?.stringValue = squad.squadName
+            }
+            else if let hero = item as? Member {
+                view.textField?.stringValue = hero.name
+            }
 
+            return view
+
+        }
+
+        return nil
+    }
 }
 
 
