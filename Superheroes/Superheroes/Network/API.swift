@@ -42,7 +42,6 @@ public final class API {
         case .failure(let error):
             switch error {
             case .failedToEncode:
-                print("Failed to encode the model correctly")
                 return .failure(error)
             default:
                 return .failure(SuperHeroError.generalError(SuperHeroError.errorTexts.generalError))
@@ -57,6 +56,11 @@ public final class API {
         let urlRequest = request.request
         
         let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+
+            // NOTE: artifical delay to help show async update of table
+            sleep(UInt32.random(in: 0...2))
+
+            // The next two guards are copy/paste boilerplate
 
             // Check for fundamental networking error
             guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
@@ -77,9 +81,9 @@ public final class API {
                let data = json.data(using: .utf8)
             {
                 let decoder = JSONDecoder()
-                let superheroSquad = try? decoder.decode([SuperheroSquad].self, from: data)
-                print(superheroSquad)
-                
+                let superheroSquads = try? decoder.decode([SuperheroSquad].self, from: data)
+                request.returnedData = superheroSquads
+
                 callback?(request)
             }
 

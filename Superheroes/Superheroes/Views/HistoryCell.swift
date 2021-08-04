@@ -9,5 +9,5 @@ import AppKit
 
 class HistoryCell: NSTableCellView {
     @IBOutlet weak var dateLabel: NSTextField!
-    @IBOutlet weak var statusLabel: NSTextField!
+    @IBOutlet weak var detailsLabel: NSTextField!
 }

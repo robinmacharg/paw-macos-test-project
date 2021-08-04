@@ -7,6 +7,9 @@
 
 import Foundation
 
+/**
+ * Represents a POST request
+ */
 class Request {
     class Timestamps {
         var started: Date? = nil
@@ -22,6 +25,7 @@ class Request {
     var timestamps: Timestamps
     var squads: [SuperheroSquad]
     var request: URLRequest
+    var returnedData: [SuperheroSquad]? = nil
     var state: RequestState
 
     init(id: UUID, timestamps: Timestamps, squads: [SuperheroSquad], request: URLRequest, state: RequestState) {
@@ -31,8 +35,4 @@ class Request {
         self.request = request
         self.state = state
     }
-
-//    mutating func updateState(_ state: RequestState) {
-//        self.state = state
-//    }
 }

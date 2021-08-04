@@ -1,3 +1,5 @@
+**For notes on the submitted code please see [the README_submission.md](Superheroes/README_submission.md) document in the Superheroes subdirectory.**
+
 ## Tech stack
 
 - Swift

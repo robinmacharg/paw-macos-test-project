@@ -29,53 +29,55 @@ class MainVC: NSViewController {
         dateFormatter.dateFormat = "yyyy/MM/dd, HH:mm:ss"
     }
 
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
     // MARK: - Actions
     
     /**
      * Build and submit a request, updating the model on success
      */
     @IBAction func submitRequest(_ sender: Any) {
-        let squads = Data.createSquads(maxSquads: 5, maxMembers: 5)
-        let request = API.makeURLRequest(squads: squads)
-        
-        switch request {
-        case .success(let urlRequest):
-            let requestID = UUID()
-            var request = Request(
-                id: requestID,
-                timestamps: Request.Timestamps(started: Date()),
-                squads: squads,
-                request: urlRequest,
-                state: .created)
-            
-            model.history.append(request)
 
-            DispatchQueue.main.async {
-                self.historyTableView.reloadData()
-            }
-            
-            API.sendRequest(request) { [self] request in
+        DispatchQueue.global().async {
+            let squads = Data.createSquads(maxSquads: 5, maxMembers: 5)
+            let request = API.makeURLRequest(squads: squads)
 
-                // NOTE: artifical delay to help show async update of table
-                sleep(UInt32.random(in: 0...2))
+            switch request {
+            case .success(let urlRequest):
+                let requestID = UUID()
+                let request = Request(
+                    id: requestID,
+                    timestamps: Request.Timestamps(started: Date()),
+                    squads: squads,
+                    request: urlRequest,
+                    state: .created)
 
-                if let request = self.model.history.filter({ $0.id == requestID }).first {
-                    request.state = .completed
-                    request.timestamps.completed = Date()
+                // Full MVVM would use a model method and have some observation mechanism on the history property
+                self.model.history.append(request)
+
+                // Update the history with the initial (unreturned) request
+                self.reloadHistoryPreservingSelection()
+
+                API.sendRequest(request) { [self] request in
+                    if let request = self.model.history.filter({ $0.id == requestID }).first {
+                        request.state = .completed
+                        request.timestamps.completed = Date()
+                    }
+
+                    self.reloadHistoryPreservingSelection()
                 }
-
-                DispatchQueue.main.async {
-                    self.historyTableView.reloadData()
-                }
+            case .failure(let error):
+                fatalError("unhandled: \(error.localizedDescription)")
             }
-        case .failure(let error):
-            fatalError("unhandled: \(error.localizedDescription)")
+        }
+    }
+
+    /**
+     * Preserve (and later restore) the user's selection
+     */
+    private func reloadHistoryPreservingSelection() {
+        DispatchQueue.main.async {
+            let selectedRowIndex = self.historyTableView.selectedRow
+            self.historyTableView.reloadData()
+            self.historyTableView.selectRowIndexes([selectedRowIndex], byExtendingSelection: false)
         }
     }
 }
@@ -84,9 +86,9 @@ class MainVC: NSViewController {
 
 extension MainVC {
     fileprivate enum CellIdentifiers {
-        static let HistoryCellID = NSUserInterfaceItemIdentifier(rawValue: "HistoryCell")
-        static let KeyCellID = NSUserInterfaceItemIdentifier("KeyCell")
-        static let KeyColumnID = NSUserInterfaceItemIdentifier("KeyColumn")
+        static let HistoryCellID = NSUserInterfaceItemIdentifier("HistoryCell")
+        static let KeyCellID     = NSUserInterfaceItemIdentifier("KeyCell")
+        static let KeyColumnID   = NSUserInterfaceItemIdentifier("KeyColumn")
         static let ValueColumnID = NSUserInterfaceItemIdentifier("ValueColumn")
     }
 }
@@ -108,12 +110,23 @@ extension MainVC: NSTableViewDelegate {
                 dateString = "Started: \(dateFormatter.string(from: started))"
             }
 
-            if let completed = item.timestamps.completed{
+            if let completed = item.timestamps.completed {
                 dateString += " - Completed: \(dateFormatter.string(from: completed))"
             }
 
             cell.dateLabel?.stringValue = dateString
-            cell.statusLabel?.stringValue = item.state.rawValue
+
+            let squadCountText = "\(item.squads.count) squad\((item.squads.count == 0 || item.squads.count > 1) ? "s" : "")"
+
+            // Simpler than string interpolation
+            var squadNames = ""
+            if item.squads.count > 0 {
+                squadNames = "(" + item.squads.map({ squad in squad.squadName }).joined(separator: ", ") + ")"
+            }
+
+            cell.detailsLabel?.stringValue = "\(squadCountText) \(squadNames)"
+                //"\(item.squads.count) squad\((item.squads.count == 0 || item.squads.count > 1) ? "s" : "") (\(item)"
+
           return cell
         }
         return nil
@@ -126,6 +139,7 @@ extension MainVC: NSTableViewDelegate {
         else {
             model.currentRequest = nil
         }
+
         DispatchQueue.main.async {
             self.outlineView.reloadData()
             self.outlineView.expandItem(nil, expandChildren: true)
@@ -148,13 +162,14 @@ extension MainVC: NSOutlineViewDataSource {
 
         switch item {
         case nil:
-            return model.currentRequest?.squads.count ?? 0
+            // Ensure that we only show /returned/ data
+            return model.currentRequest?.returnedData?.count ?? 0
         case is SuperheroSquad:
-            return 5
-        case is Member:
-            return 3
+            return 5 // hardcoded - could use a list of fields and build the list in the next function
         case let members as [Member]:
             return members.count
+        case is Member:
+            return 3 // Likewise, hardcoded
         default:
             return 0
         }
@@ -194,6 +209,7 @@ extension MainVC: NSOutlineViewDataSource {
         return item is SuperheroSquad
             || item is [Member]
             || item is Member
+        // If we were to expand the 'powers' field we'd pick it up here
     }
 }
 
@@ -201,6 +217,7 @@ extension MainVC: NSOutlineViewDataSource {
 
 extension MainVC: NSOutlineViewDelegate {
 
+    // A convenience tuple for passing (key, value)s around
     typealias StringKeyValue = (String, String)
 
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
@@ -208,8 +225,8 @@ extension MainVC: NSOutlineViewDelegate {
             return nil
         }
 
+        // A sensible default value to clear unused cells
         var textFieldValue = ""
-
 
         if let view = outlineView.makeView(
             withIdentifier: CellIdentifiers.KeyCellID,
@@ -233,6 +250,7 @@ extension MainVC: NSOutlineViewDelegate {
 
             // Using StringKeyValue allows generic reuse
             case let (key, value) as StringKeyValue:
+                // An explicit switch is clearer and more extensible than e.g. a presumptive ternary that assumes only two columns
                 switch columnIdentifier {
                 case CellIdentifiers.KeyColumnID:
                     textFieldValue = key
