@@ -121,10 +121,10 @@
 		00D5022D26B6B21E00F41D2C /* Superheroes */ = {
 			isa = PBXGroup;
 			children = (
+				00D5022E26B6B21E00F41D2C /* AppDelegate.swift */,
 				00D5026626B7FEAF00F41D2C /* Errors.swift */,
 				00D5026026B6B4BB00F41D2C /* Data */,
 				00D5026826B8011B00F41D2C /* Network */,
-				00D5022E26B6B21E00F41D2C /* AppDelegate.swift */,
 				000C3CDC26BA524700C58ECC /* Views */,
 				00D5023526B6B22200F41D2C /* Assets.xcassets */,
 				00D5023726B6B22200F41D2C /* Main.storyboard */,

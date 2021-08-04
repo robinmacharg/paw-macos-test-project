@@ -15,7 +15,14 @@ class MainVC: NSViewController {
 
     // MARK: - Properties
     
-    var model: MainVCViewModel = MainVCViewModel()
+    @objc var model: MainVCViewModel = MainVCViewModel()
+    
+    @objc dynamic var array: [String] {
+        let foo = model.history.map { $0.id.uuidString }
+        return foo
+    }
+    
+//    @objc var array2 = ["a", "b"]
     
     // MARK: - View Lifecycle
 

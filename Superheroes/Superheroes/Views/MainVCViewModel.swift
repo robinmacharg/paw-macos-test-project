@@ -13,14 +13,28 @@ enum RequestState {
     case finished
 }
 
-struct Request {
-    var id: UUID
-    var squads: [SuperheroSquad]
+@objc class Request: NSObject {
+    @objc var id: UUID
+    var squads: [SuperheroSquad] = []
     var request: URLRequest
     var state: RequestState
+    
+    @objc var idAsString: String {
+        return self.id.uuidString
+    }
+    
+    init(id: UUID, squads: [SuperheroSquad] , request: URLRequest, state: RequestState) {
+        self.id = UUID()
+        self.squads = squads
+        self.request = request
+        self.state = state
+//        let foo = URL
+    }
 }
 
-struct MainVCViewModel {
-    var history: [Request] = []
+@objc class MainVCViewModel: NSObject {
+    @objc var history: [Request] = [Request(id: UUID(), squads: [], request: URLRequest(url: URL(string: "http://djfhjsdf")!), state: .created)]
     var currentRequest: Request? = nil
+    
+    
 }
