@@ -176,8 +176,8 @@ extension MainVC: NSOutlineViewDataSource {
     }
 
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-        if let squad = item as? SuperheroSquad {
-
+        switch item {
+        case let squad as SuperheroSquad:
             // This style vs. a switch... Undecided which is clearer
             return [
                 ("id",        "\(squad.id)"),
@@ -186,13 +186,11 @@ extension MainVC: NSOutlineViewDataSource {
                 ("Active",    "\(squad.active ? "Yes" : "No")"),
                 squad.members,
             ][index]
-        }
 
-        else if let members = item as? [Member] {
+        case let members as [Member]:
             return members[index]
-        }
 
-        else if let member = item as? Member {
+        case let member as Member:
             return [
                 ("Age",             "\(member.age) years old"),
                 ("Secret Identity", "\(member.secretIdentity)"),
@@ -200,9 +198,10 @@ extension MainVC: NSOutlineViewDataSource {
                 // Hopefully this delegate code shows off the idea sufficiently
                 ("Powers",          member.powers.joined(separator: ", ")),
             ][index]
-        }
 
-        return model.currentRequest?.squads[index] as Any
+        default:
+            return model.currentRequest?.squads[index] as Any
+        }
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {

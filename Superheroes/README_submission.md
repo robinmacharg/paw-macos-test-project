@@ -9,7 +9,7 @@ additional configuration. Press the "Submit POST request" button repeatedly.  Se
 code had undergone review for clarity and correctness.  In the absence of (immediate) review and explanatory pull request notes I've opted to add additional commentary
 in-line in the code.  These comments may be seen as overkill and I'd beg the reviewer's understanding.
 
-2. - "Keep history of requests/responses and allow to switch between them;" - This is ambiguous. Ordinarily I'd seek clarity, but given the scope of the exercise my 
+2. "Keep history of requests/responses and allow to switch between them;" - This is ambiguous. Ordinarily I'd seek clarity, but given the scope of the exercise my 
 interpretation is that we should be able to switch between different historical requests, not that we should be able to switch between the request and response.  I 
 only show a tree from the response `data`.  I've also noted where I've compacted the tree (powers) and why.  This falls under "nice UI" pragmatism.  
 
@@ -30,4 +30,4 @@ applied to the implementation of MVVM/reactivity.
 
 9. There's an intentional delay (`sleep(Int.random()`) in processing the response to better show off the async updates.
 
-10. Standard delegate.datasource extensions do not have method docs.  It's assumed they're standard patterns and well understood.
+10. Standard delegate/datasource extensions do not have method docs.  It's assumed they're standard patterns and well understood.
